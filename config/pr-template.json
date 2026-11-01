@@ -1,0 +1,23 @@
+{
+  "requiredCheckboxes": [
+    "DOCS",
+    "DOMAIN_STRUCTURE",
+    "WEBSITE_REACHABLE",
+    "SOFTWARE_RELATED",
+    "NON_COMMERCIAL",
+    "CONTACT_INFO",
+    "WEBSITE_LINK"
+  ],
+  "requiredSections": [
+    {
+      "key": "websitePreview",
+      "start": "<!-- WEBSITE_PREVIEW_START -->",
+      "end": "<!-- WEBSITE_PREVIEW_END -->"
+    },
+    {
+      "key": "websitePurpose",
+      "start": "<!-- WEBSITE_PURPOSE_START -->",
+      "end": "<!-- WEBSITE_PURPOSE_END -->"
+    }
+  ]
+}

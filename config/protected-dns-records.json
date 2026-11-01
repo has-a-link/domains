@@ -1,0 +1,5 @@
+{
+  "names": ["@"],
+  "namePatterns": ["*._cf-custom-hostname", "*._domainkey", "_acme-challenge.*"],
+  "types": ["NS", "SOA"]
+}

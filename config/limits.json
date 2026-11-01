@@ -1,0 +1,7 @@
+{
+  "maxRecordsPerDomain": 10,
+  "maxDomainsPerOwner": 10,
+  "maxSingleCharacterSubdomainsPerOwner": 1,
+  "maxNestingDepth": 3,
+  "maxTxtLength": 255
+}

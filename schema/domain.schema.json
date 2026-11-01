@@ -1,0 +1,103 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://has-a.link/schema/domain.schema.json",
+  "title": "has-a.link domain registration",
+  "description": "Schema for a single domain registration file in the has-a.link registry.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["owner", "records"],
+  "properties": {
+    "owner": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["username"],
+      "properties": {
+        "username": {
+          "type": "string",
+          "description": "GitHub username of the domain owner.",
+          "pattern": "^[A-Za-z0-9](?:[A-Za-z0-9]|-(?=[A-Za-z0-9])){0,38}$"
+        },
+        "email": {
+          "type": "string",
+          "description": "Optional contact email address.",
+          "format": "email"
+        }
+      }
+    },
+    "records": {
+      "type": "object",
+      "description": "DNS records for the subdomain.",
+      "additionalProperties": false,
+      "minProperties": 1,
+      "maxProperties": 5,
+      "properties": {
+        "A": {
+          "type": "array",
+          "description": "IPv4 addresses.",
+          "items": {
+            "type": "string",
+            "format": "ipv4"
+          },
+          "minItems": 1,
+          "maxItems": 5,
+          "uniqueItems": true
+        },
+        "AAAA": {
+          "type": "array",
+          "description": "IPv6 addresses.",
+          "items": {
+            "type": "string",
+            "format": "ipv6"
+          },
+          "minItems": 1,
+          "maxItems": 5,
+          "uniqueItems": true
+        },
+        "CNAME": {
+          "type": "string",
+          "description": "CNAME target hostname without a trailing dot.",
+          "pattern": "^(?=.{1,253}$)(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\\.)+[a-z]{2,63}$"
+        },
+        "MX": {
+          "type": "array",
+          "description": "Mail exchanger records.",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["priority", "target"],
+            "properties": {
+              "priority": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 65535
+              },
+              "target": {
+                "type": "string",
+                "pattern": "^(?=.{1,253}$)(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\\.)+[a-z]{2,63}$"
+              }
+            }
+          },
+          "minItems": 1,
+          "maxItems": 5,
+          "uniqueItems": true
+        },
+        "TXT": {
+          "type": "array",
+          "description": "TXT record values.",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 255
+          },
+          "minItems": 1,
+          "maxItems": 5,
+          "uniqueItems": true
+        }
+      }
+    },
+    "proxied": {
+      "type": "boolean",
+      "description": "Whether Cloudflare proxying is enabled for supported records."
+    }
+  }
+}

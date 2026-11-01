@@ -1,0 +1,19 @@
+name: Suggestion
+description: Suggest a feature or change for the registry.
+title: "[Suggestion]: "
+labels: ["suggestion"]
+body:
+  - type: textarea
+    id: suggestion
+    attributes:
+      label: Suggestion
+      description: What would you like to add or change?
+    validations:
+      required: true
+  - type: textarea
+    id: reason
+    attributes:
+      label: Reason
+      description: Why would this be useful?
+    validations:
+      required: true

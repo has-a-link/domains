@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Registration guide
+    url: https://github.com/has-a-link/domains/blob/main/README.md#register-a-subdomain
+    about: Read the registration steps before opening an issue.
+  - name: Security policy
+    url: https://github.com/has-a-link/domains/blob/main/SECURITY.md
+    about: Report security vulnerabilities privately.

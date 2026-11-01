@@ -1,0 +1,27 @@
+{
+  "A": {
+    "kind": "array",
+    "max": 5,
+    "proxyable": true
+  },
+  "AAAA": {
+    "kind": "array",
+    "max": 5,
+    "proxyable": true
+  },
+  "CNAME": {
+    "kind": "string",
+    "max": 1,
+    "proxyable": true
+  },
+  "MX": {
+    "kind": "array",
+    "max": 5,
+    "proxyable": false
+  },
+  "TXT": {
+    "kind": "array",
+    "max": 5,
+    "proxyable": false
+  }
+}

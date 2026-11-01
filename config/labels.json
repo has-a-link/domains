@@ -1,0 +1,77 @@
+{
+  "bug": {
+    "name": "bug",
+    "color": "d73a4a",
+    "description": "Something is broken"
+  },
+  "ci": {
+    "name": "ci",
+    "color": "5319e7",
+    "description": "Workflow, test, or tooling change"
+  },
+  "documentation": {
+    "name": "documentation",
+    "color": "0075ca",
+    "description": "Documentation change"
+  },
+  "domain": {
+    "name": "domain",
+    "color": "1d76db",
+    "description": "Domain registration pull request"
+  },
+  "invalid": {
+    "name": "reason: invalid",
+    "color": "d93f0b",
+    "description": "Validation failed"
+  },
+  "maintainer": {
+    "name": "maintainer",
+    "color": "0e8a16",
+    "description": "Trusted maintainer"
+  },
+  "mergeConflict": {
+    "name": "reason: merge-conflict",
+    "color": "e99695",
+    "description": "Pull request has merge conflicts"
+  },
+  "noStale": {
+    "name": "no-stale",
+    "color": "ededed",
+    "description": "Exempt from stale handling"
+  },
+  "notFormatted": {
+    "name": "reason: not-formatted",
+    "color": "f9d0c4",
+    "description": "Changed files are not formatted"
+  },
+  "owner": {
+    "name": "reason: owner-mismatch",
+    "color": "b60205",
+    "description": "Domain owner does not match the pull request author"
+  },
+  "question": {
+    "name": "question",
+    "color": "d876e3",
+    "description": "Question about the service"
+  },
+  "reportAbuse": {
+    "name": "report-abuse",
+    "color": "e11d21",
+    "description": "Abuse report"
+  },
+  "suggestion": {
+    "name": "suggestion",
+    "color": "a2eeef",
+    "description": "Suggestion or feedback"
+  },
+  "support": {
+    "name": "support",
+    "color": "c5def5",
+    "description": "Support request"
+  },
+  "template": {
+    "name": "reason: incomplete-template",
+    "color": "fbca04",
+    "description": "Pull request template is incomplete"
+  }
+}

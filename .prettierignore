@@ -1,0 +1,6 @@
+.reference
+register
+node_modules
+coverage
+package-lock.json
+deploy-artifacts

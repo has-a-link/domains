@@ -1,0 +1,27 @@
+name: Domain issue
+description: Report a problem with an existing subdomain.
+title: "[Domain]: "
+labels: ["domain", "support"]
+body:
+  - type: input
+    id: subdomain
+    attributes:
+      label: Subdomain
+      description: The full subdomain.
+      placeholder: example.has-a.link
+    validations:
+      required: true
+  - type: textarea
+    id: issue
+    attributes:
+      label: Issue
+      description: Describe the problem with the domain.
+    validations:
+      required: true
+  - type: input
+    id: pull-request
+    attributes:
+      label: Related pull request
+      description: Link the registration or update pull request if you have it.
+    validations:
+      required: false

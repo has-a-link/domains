@@ -1,0 +1,38 @@
+name: Bug report
+description: Report a bug in the registry, workflows, or tooling.
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Do not include secrets, tokens, or personal credentials in this issue.
+  - type: input
+    id: subdomain
+    attributes:
+      label: Subdomain
+      description: The affected subdomain, if applicable.
+      placeholder: example.has-a.link
+    validations:
+      required: false
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected outcome
+      description: What should have happened?
+    validations:
+      required: true
+  - type: textarea
+    id: observed
+    attributes:
+      label: Observed outcome
+      description: What happened instead?
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: Include links to workflow runs or pull requests when possible.
+    validations:
+      required: false

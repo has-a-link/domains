@@ -1,0 +1,9 @@
+* @has-a-link/maintainers
+
+/.github/ @has-a-link/maintainers
+/config/ @has-a-link/maintainers
+/domains/ @has-a-link/maintainers
+/messages/ @has-a-link/maintainers
+/schema/ @has-a-link/maintainers
+/tests/ @has-a-link/maintainers
+/utils/ @has-a-link/maintainers

@@ -1,0 +1,46 @@
+{
+  "name": "has-a-link-domains",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Domain registry for has-a.link",
+  "homepage": "https://has-a.link",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/has-a-link/domains"
+  },
+  "bugs": {
+    "url": "https://github.com/has-a-link/domains/issues"
+  },
+  "license": "MIT",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "test": "ava",
+    "test:watch": "ava --watch",
+    "format": "prettier . --write",
+    "format:check": "prettier . --check",
+    "validate": "node utils/commands/validate-registry.js",
+    "validate:pr": "node utils/commands/validate-pr.js",
+    "simulate:pr": "node utils/commands/simulate-pr.js",
+    "deploy": "node utils/commands/deploy.js",
+    "deploy:dry": "node utils/commands/deploy.js --dry-run",
+    "add:reserved": "node utils/commands/add-reserved.js",
+    "sync:labels": "node utils/commands/sync-labels.js"
+  },
+  "ava": {
+    "files": [
+      "tests/**/*.test.js"
+    ]
+  },
+  "devDependencies": {
+    "ajv": "^8.20.0",
+    "ajv-formats": "^3.0.1",
+    "ava": "^8.3.0",
+    "c8": "^12.0.0",
+    "ipaddr.js": "^2.5.0",
+    "prettier": "^3.9.10",
+    "yaml": "^2.9.1"
+  }
+}

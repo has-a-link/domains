@@ -1,0 +1,4 @@
+{
+  "exact": ["api", "assets", "cdn", "docs", "status", "www"],
+  "suffixes": []
+}

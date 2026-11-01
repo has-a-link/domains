@@ -1,0 +1,7 @@
+{
+  "zone": "has-a.link",
+  "ttl": 300,
+  "proxiedTtl": 1,
+  "comment": "managed by has-a.link registry",
+  "maxDeletionsPerRun": 50
+}

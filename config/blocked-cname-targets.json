@@ -1,0 +1,4 @@
+{
+  "exact": ["has-a.link"],
+  "suffixes": [".cfargotunnel.com", ".ngrok.io", ".r2.dev", ".trycloudflare.com", ".workers.dev"]
+}
