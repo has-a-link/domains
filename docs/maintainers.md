@@ -89,6 +89,12 @@ The dry-run:
 - Prints the planned creates, updates, deletes, and no-ops.
 - Does not write to Cloudflare.
 
+To preview against a saved Cloudflare records file:
+
+```bash
+npm run deploy -- --from-file zone-records.json --allow-empty-zone
+```
+
 ### Apply changes
 
 ```bash

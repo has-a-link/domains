@@ -124,3 +124,24 @@ test("simulate and sync-label workflows are manual", (t) => {
 
   t.is(syncLabels.permissions.issues, "write");
 });
+
+test("deploy workflow is production-scoped and applies only intentionally", (t) => {
+  const workflow = parseWorkflow("deploy.yml");
+
+  t.deepEqual(workflow.on.push.branches, ["main"]);
+  t.true(workflow.on.push.paths.includes("domains/**"));
+  t.true(workflow.on.push.paths.includes("config/**"));
+  t.true(Boolean(workflow.on.workflow_dispatch.inputs.apply));
+  t.deepEqual(Object.keys(workflow.jobs), ["validate", "deploy"]);
+  t.is(workflow.jobs.deploy.environment, "production");
+  t.is(workflow.jobs.deploy.needs, "validate");
+  t.false(JSON.stringify(workflow.jobs.validate).includes("CLOUDFLARE_API_TOKEN"));
+  t.true(JSON.stringify(workflow.jobs.deploy).includes("secrets.CLOUDFLARE_API_TOKEN"));
+
+  const upload = workflow.jobs.deploy.steps.find((step) =>
+    step.uses?.startsWith("actions/upload-artifact@")
+  );
+
+  t.truthy(upload);
+  t.regex(upload.uses, /@[0-9a-f]{40}$/);
+});
