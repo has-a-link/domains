@@ -1,0 +1,201 @@
+name: PR Checks
+
+on:
+  pull_request_target:
+    types:
+      - opened
+      - reopened
+      - edited
+      - synchronize
+      - ready_for_review
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pr-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  changes:
+    name: Detect changes
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: read
+    outputs:
+      domain: ${{ steps.changes.outputs.domain }}
+      infra: ${{ steps.changes.outputs.infra }}
+      docs: ${{ steps.changes.outputs.docs }}
+    steps:
+      - name: Checkout base
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        with:
+          ref: ${{ github.event.pull_request.base.sha }}
+          persist-credentials: false
+
+      - name: Set up Node
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Detect changed paths
+        id: changes
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: node utils/commands/detect-changes.js
+
+  format-check:
+    name: Format check
+    needs: changes
+    if: needs.changes.outputs.domain == 'true' || needs.changes.outputs.infra == 'true' || needs.changes.outputs.docs == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: read
+    steps:
+      - name: Checkout pull request
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        with:
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
+          ref: ${{ github.event.pull_request.head.sha }}
+          persist-credentials: false
+
+      - name: Set up Node
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci --ignore-scripts
+
+      - name: Check changed files
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: node utils/commands/check-format-changed.js
+
+  domain-validation:
+    name: Validate domain changes
+    needs: changes
+    if: needs.changes.outputs.domain == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+      issues: write
+    steps:
+      - name: Checkout base
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        with:
+          ref: ${{ github.event.pull_request.base.sha }}
+          persist-credentials: false
+
+      - name: Checkout pull request domains
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        with:
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
+          ref: ${{ github.event.pull_request.head.sha }}
+          path: pr-head
+          sparse-checkout: domains
+          persist-credentials: false
+
+      - name: Set up Node
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci --ignore-scripts
+
+      - name: Write pull request body
+        env:
+          PR_BODY: ${{ github.event.pull_request.body }}
+        run: printf '%s' "$PR_BODY" > "$RUNNER_TEMP/pr-body.md"
+
+      - name: Validate pull request
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          PR_AUTHOR: ${{ github.event.pull_request.user.login }}
+          PR_AUTHOR_ID: ${{ github.event.pull_request.user.id }}
+          BOT_LOGIN: github-actions[bot]
+        run: |
+          npm run validate:pr -- \
+            --base-domains domains \
+            --head-domains pr-head/domains \
+            --pull-request "$PR_NUMBER" \
+            --body-file "$RUNNER_TEMP/pr-body.md" \
+            --author "$PR_AUTHOR" \
+            --author-id "$PR_AUTHOR_ID" \
+            --repo "$GITHUB_REPOSITORY" \
+            --post
+
+  infra-tests:
+    name: Infrastructure tests
+    needs: changes
+    if: needs.changes.outputs.infra == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout pull request
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        with:
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
+          ref: ${{ github.event.pull_request.head.sha }}
+          persist-credentials: false
+
+      - name: Set up Node
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci --ignore-scripts
+
+      - name: Check formatting
+        run: npm run format:check
+
+      - name: Run tests
+        run: npm run test:ci
+
+  gate:
+    name: Gate
+    needs:
+      - changes
+      - format-check
+      - domain-validation
+      - infra-tests
+    if: always()
+    runs-on: ubuntu-latest
+    permissions: {}
+    steps:
+      - name: Check job results
+        env:
+          CHANGES: ${{ needs.changes.result }}
+          FORMAT: ${{ needs.format-check.result }}
+          DOMAIN: ${{ needs.domain-validation.result }}
+          INFRA: ${{ needs.infra-tests.result }}
+        run: |
+          for result in "$CHANGES" "$FORMAT" "$DOMAIN" "$INFRA"; do
+            if [ "$result" = "failure" ] || [ "$result" = "cancelled" ]; then
+              echo "A required job failed or was cancelled."
+              exit 1
+            fi
+          done
+
+          if [ "$CHANGES" != "success" ]; then
+            echo "Change detection did not succeed."
+            exit 1
+          fi
+
+          echo "PR checks passed."

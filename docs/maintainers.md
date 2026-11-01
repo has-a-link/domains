@@ -49,9 +49,8 @@ The bot:
 - Posts one comment per pull request.
 - Updates the same comment on later pushes.
 - Adds and removes reason labels.
-- Deletes the validation comment when the pull request is closed.
 
-The bot must not execute code from the pull request head. Only the read-only infrastructure test job runs pull request code.
+The bot must not execute code from the pull request head. Only the read-only infrastructure test and format check jobs run pull request code.
 
 ## CI behavior
 
@@ -114,7 +113,7 @@ Run the `deploy` workflow and leave `apply` disabled for a dry-run. Enable `appl
 
 Recommended repository settings:
 
-- Require the `PR Checks` status check.
+- Require the `PR Checks / Gate` status check.
 - Require review from CODEOWNERS.
 - Require conversation resolution.
 - Restrict force pushes.

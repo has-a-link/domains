@@ -3,6 +3,16 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
+import { ERROR_CODES } from "../utils/lib/errors.js";
+import {
+  PR_COMMENT_MARKER,
+  MERGE_CONFLICT_MARKER,
+  renderError,
+  renderMergeConflict,
+  renderPrComment,
+  renderTemplate
+} from "../utils/lib/messages.js";
+
 const root = path.resolve(fileURLToPath(new URL("..", import.meta.url)));
 const messagesRoot = path.join(root, "messages");
 
@@ -54,7 +64,16 @@ test("message files contain no foreign service references", (t) => {
 });
 
 test("message placeholders use known names", (t) => {
-  const allowed = new Set(["repoUrl", "summary", "errors", "footer", "file", "detail"]);
+  const allowed = new Set([
+    "repoUrl",
+    "summary",
+    "errors",
+    "footer",
+    "file",
+    "path",
+    "message",
+    "detail"
+  ]);
 
   for (const file of messageFiles) {
     const contents = read(path.relative(root, file));
@@ -83,8 +102,84 @@ test("manifest entries are safe relative markdown paths", (t) => {
   }
 });
 
+test("manifest covers every validation error code", (t) => {
+  const manifest = JSON.parse(read("messages/manifest.json"));
+  const missing = Object.values(ERROR_CODES).filter((code) => !manifest[code]);
+
+  t.deepEqual(missing, []);
+});
+
+test("manifest only contains known error codes and the fallback", (t) => {
+  const manifest = JSON.parse(read("messages/manifest.json"));
+  const known = new Set([...Object.values(ERROR_CODES), "unknown"]);
+
+  for (const code of Object.keys(manifest)) {
+    t.true(known.has(code), `Unknown manifest code ${code}`);
+  }
+});
+
+test("every manifest target renders without leftover placeholders", (t) => {
+  const manifest = JSON.parse(read("messages/manifest.json"));
+
+  for (const code of [...Object.values(ERROR_CODES), "unknown"]) {
+    const rendered = renderError(
+      {
+        code,
+        file: "domains/test.json",
+        path: "/records/A",
+        detail: "Test detail."
+      },
+      { root: messagesRoot }
+    );
+
+    t.false(rendered.includes("{{"), `${code} left a placeholder`);
+    t.true(rendered.includes("domains/test.json"), `${code} did not include the file`);
+    t.true(rendered.includes("Test detail."), `${code} did not include the detail`);
+  }
+});
+
+test("renderTemplate throws for a missing variable", (t) => {
+  t.throws(() => renderTemplate("Hello {{name}}", {}), {
+    message: /Missing message variable/
+  });
+});
+
+test("a failed PR comment includes the marker, summary, and footer", (t) => {
+  const comment = renderPrComment({
+    errors: [
+      {
+        code: ERROR_CODES.INVALID_A,
+        file: "domains/test.json",
+        path: "/records/A/0",
+        detail: "Invalid address."
+      }
+    ],
+    root: messagesRoot
+  });
+
+  t.true(comment.includes(PR_COMMENT_MARKER));
+  t.true(comment.includes("Found 1 validation issue in 1 file."));
+  t.true(comment.includes("Invalid address."));
+  t.true(comment.includes("Push a fix to this branch"));
+  t.false(comment.includes("{{"));
+});
+
+test("a successful PR comment includes the marker and success message", (t) => {
+  const comment = renderPrComment({ errors: [], root: messagesRoot });
+
+  t.true(comment.includes(PR_COMMENT_MARKER));
+  t.true(comment.includes("All checks passed."));
+});
+
+test("the merge conflict message includes its marker", (t) => {
+  const comment = renderMergeConflict({ root: messagesRoot });
+
+  t.true(comment.includes(MERGE_CONFLICT_MARKER));
+  t.true(comment.includes("conflicts with the `main` branch"));
+});
+
 test("the PR validation comment has its marker", (t) => {
   const comment = read("messages/pr/comment.md");
 
-  t.true(comment.includes("<!-- has-a-link-bot: pr-validation -->"));
+  t.true(comment.includes(PR_COMMENT_MARKER));
 });

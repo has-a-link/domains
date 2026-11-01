@@ -27,10 +27,11 @@ This repository is the domain registry for `has-a.link`. It accepts domain regis
 ```bash
 npm ci
 npm test
+npm run test:ci
 npm run format
 npm run format:check
 npm run validate
-npm run simulate:pr -- --scenario valid
+npm run simulate:pr -- --scenario all
 npm run deploy:dry
 npm run sync:labels
 ```

@@ -41,6 +41,9 @@
     "include": [
       "utils/**/*.js"
     ],
+    "exclude": [
+      "utils/commands/**"
+    ],
     "reporter": [
       "text",
       "lcov"

@@ -129,7 +129,16 @@ test("message manifest is an object", (t) => {
 });
 
 test("message placeholders are known", (t) => {
-  const allowed = new Set(["repoUrl", "summary", "errors", "footer", "file", "detail"]);
+  const allowed = new Set([
+    "repoUrl",
+    "summary",
+    "errors",
+    "footer",
+    "file",
+    "path",
+    "message",
+    "detail"
+  ]);
 
   for (const file of messageFiles) {
     const contents = read(file);
