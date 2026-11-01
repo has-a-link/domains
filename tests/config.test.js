@@ -1,5 +1,6 @@
 import test from "ava";
 import fs from "node:fs";
+import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -7,6 +8,8 @@ import Ajv2020 from "ajv/dist/2020.js";
 import addFormats from "ajv-formats";
 import ipaddr from "ipaddr.js";
 import { parse as parseYaml } from "yaml";
+
+import { loadConfig } from "../utils/lib/config.js";
 
 const root = path.resolve(fileURLToPath(new URL("..", import.meta.url)));
 
@@ -251,6 +254,8 @@ test("package metadata and scripts are present", (t) => {
 
   for (const script of [
     "test",
+    "test:coverage",
+    "test:ci",
     "format",
     "format:check",
     "validate",
@@ -263,6 +268,11 @@ test("package metadata and scripts are present", (t) => {
   ]) {
     t.is(typeof packageJson.scripts[script], "string", `Missing script ${script}`);
   }
+
+  t.true(packageJson.c8["check-coverage"]);
+  t.true(packageJson.c8.all);
+  t.true(packageJson.c8.lines >= 95);
+  t.true(packageJson.c8.branches >= 90);
 });
 
 test("YAML files parse", (t) => {
@@ -272,5 +282,17 @@ test("YAML files parse", (t) => {
 
   for (const file of yamlFiles) {
     t.notThrows(() => parseYaml(read(file)), `${file} is invalid YAML`);
+  }
+});
+
+test("loadConfig reports a missing config directory", (t) => {
+  const directory = fs.mkdtempSync(path.join(os.tmpdir(), "has-a-link-config-"));
+
+  try {
+    t.throws(() => loadConfig(directory), {
+      message: /Failed to read JSON/
+    });
+  } finally {
+    fs.rmSync(directory, { recursive: true, force: true });
   }
 });

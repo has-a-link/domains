@@ -1,0 +1,9 @@
+{
+  "owner": {
+    "username": "alice",
+    "email": "alice@example.com"
+  },
+  "records": {
+    "A": ["93.184.216.34"]
+  }
+}

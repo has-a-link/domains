@@ -2,6 +2,20 @@
 
 Thanks for helping improve has-a.link.
 
+## Repository layout
+
+```text
+.github/              GitHub workflows, issue forms, PR template, CODEOWNERS
+config/               Registry policy, record limits, labels, and Cloudflare settings
+docs/                 Detailed registration, record, review, and maintainer documentation
+domains/              Domain registration JSON files
+messages/             Bot responses and message metadata
+schema/               JSON Schema for domain files
+tests/                Unit, fixture, integration, and workflow contract tests
+utils/commands/       Command-line entry points
+utils/lib/            Shared validation, GitHub, message, and Cloudflare logic
+```
+
 ## Local development
 
 Requirements:
@@ -19,6 +33,12 @@ Run the test suite:
 
 ```bash
 npm test
+```
+
+Run the CI-equivalent suite with coverage thresholds:
+
+```bash
+npm run test:ci
 ```
 
 Watch tests during development:

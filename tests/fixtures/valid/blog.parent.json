@@ -1,0 +1,8 @@
+{
+  "owner": {
+    "username": "frank"
+  },
+  "records": {
+    "CNAME": "blog.example.com"
+  }
+}

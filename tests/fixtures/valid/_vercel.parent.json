@@ -1,0 +1,8 @@
+{
+  "owner": {
+    "username": "frank"
+  },
+  "records": {
+    "TXT": ["vc-domain-verify=parent,abc123"]
+  }
+}

@@ -1,0 +1,530 @@
+[
+  {
+    "name": "invalid JSON",
+    "files": {
+      "bad.json": "{"
+    },
+    "codes": ["invalid_json"]
+  },
+  {
+    "name": "duplicate keys",
+    "files": {
+      "dupe.json": "{\n  \"owner\": { \"username\": \"alice\" },\n  \"owner\": { \"username\": \"alice\" },\n  \"records\": { \"CNAME\": \"example.com\" }\n}"
+    },
+    "codes": ["duplicate_keys"]
+  },
+  {
+    "name": "uppercase filename",
+    "files": {
+      "Example.json": {
+        "owner": { "username": "alice" },
+        "records": { "CNAME": "example.com" }
+      }
+    },
+    "codes": ["uppercase_filename"]
+  },
+  {
+    "name": "consecutive hyphens",
+    "files": {
+      "bad--name.json": {
+        "owner": { "username": "alice" },
+        "records": { "CNAME": "example.com" }
+      }
+    },
+    "codes": ["consecutive_hyphens"]
+  },
+  {
+    "name": "leading hyphen",
+    "files": {
+      "-bad.json": {
+        "owner": { "username": "alice" },
+        "records": { "CNAME": "example.com" }
+      }
+    },
+    "codes": ["leading_or_trailing_hyphen"]
+  },
+  {
+    "name": "consecutive dots",
+    "files": {
+      "bad..name.json": {
+        "owner": { "username": "alice" },
+        "records": { "CNAME": "example.com" }
+      }
+    },
+    "codes": ["consecutive_dots"]
+  },
+  {
+    "name": "punycode filename",
+    "files": {
+      "xn--example.json": {
+        "owner": { "username": "alice" },
+        "records": { "CNAME": "example.com" }
+      }
+    },
+    "codes": ["punycode_filename"]
+  },
+  {
+    "name": "label too long",
+    "files": {
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.json": {
+        "owner": { "username": "alice" },
+        "records": { "CNAME": "example.com" }
+      }
+    },
+    "codes": ["label_too_long"]
+  },
+  {
+    "name": "reserved subdomain",
+    "files": {
+      "admin.json": {
+        "owner": { "username": "alice" },
+        "records": { "CNAME": "example.com" }
+      }
+    },
+    "codes": ["reserved_subdomain"]
+  },
+  {
+    "name": "internal subdomain",
+    "files": {
+      "docs.json": {
+        "owner": { "username": "alice" },
+        "records": { "CNAME": "example.com" }
+      }
+    },
+    "codes": ["internal_subdomain"]
+  },
+  {
+    "name": "missing parent",
+    "files": {
+      "blog.parent.json": {
+        "owner": { "username": "alice" },
+        "records": { "CNAME": "example.com" }
+      }
+    },
+    "codes": ["missing_parent"]
+  },
+  {
+    "name": "parent not owned",
+    "files": {
+      "parent.json": {
+        "owner": { "username": "alice" },
+        "records": { "A": ["93.184.216.34"] }
+      },
+      "blog.parent.json": {
+        "owner": { "username": "bob" },
+        "records": { "CNAME": "example.com" }
+      }
+    },
+    "codes": ["parent_not_owned"]
+  },
+  {
+    "name": "parent has CNAME",
+    "files": {
+      "parent.json": {
+        "owner": { "username": "alice" },
+        "records": { "CNAME": "example.com" }
+      },
+      "blog.parent.json": {
+        "owner": { "username": "alice" },
+        "records": { "A": ["93.184.216.34"] }
+      }
+    },
+    "codes": ["parent_has_cname"]
+  },
+  {
+    "name": "nesting too deep",
+    "files": {
+      "d.json": {
+        "owner": { "username": "alice" },
+        "records": { "A": ["93.184.216.34"] }
+      },
+      "c.d.json": {
+        "owner": { "username": "alice" },
+        "records": { "A": ["93.184.216.34"] }
+      },
+      "b.c.d.json": {
+        "owner": { "username": "alice" },
+        "records": { "A": ["93.184.216.34"] }
+      },
+      "a.b.c.d.json": {
+        "owner": { "username": "alice" },
+        "records": { "CNAME": "example.com" }
+      }
+    },
+    "codes": ["nesting_too_deep"]
+  },
+  {
+    "name": "owner missing",
+    "files": {
+      "no-owner.json": {
+        "records": { "CNAME": "example.com" }
+      }
+    },
+    "codes": ["owner_missing"]
+  },
+  {
+    "name": "missing owner username",
+    "files": {
+      "no-username.json": {
+        "owner": { "email": "alice@example.com" },
+        "records": { "CNAME": "example.com" }
+      }
+    },
+    "codes": ["missing_owner_username"]
+  },
+  {
+    "name": "invalid owner username",
+    "files": {
+      "bad-owner.json": {
+        "owner": { "username": "-bad" },
+        "records": { "CNAME": "example.com" }
+      }
+    },
+    "codes": ["invalid_owner_username"]
+  },
+  {
+    "name": "invalid email",
+    "files": {
+      "bad-email.json": {
+        "owner": { "username": "alice", "email": "not-an-email" },
+        "records": { "CNAME": "example.com" }
+      }
+    },
+    "codes": ["invalid_email"]
+  },
+  {
+    "name": "unknown field",
+    "files": {
+      "extra.json": {
+        "owner": { "username": "alice" },
+        "records": { "CNAME": "example.com" },
+        "extra": true
+      }
+    },
+    "codes": ["unknown_field"]
+  },
+  {
+    "name": "unknown record type",
+    "files": {
+      "unknown-type.json": {
+        "owner": { "username": "alice" },
+        "records": {
+          "A": ["93.184.216.34"],
+          "NS": ["ns1.example.com"]
+        }
+      }
+    },
+    "codes": ["unknown_record_type"]
+  },
+  {
+    "name": "missing records",
+    "files": {
+      "no-records.json": {
+        "owner": { "username": "alice" },
+        "records": {}
+      }
+    },
+    "codes": ["missing_records"]
+  },
+  {
+    "name": "invalid records",
+    "files": {
+      "bad-records.json": {
+        "owner": { "username": "alice" },
+        "records": "invalid"
+      }
+    },
+    "codes": ["invalid_records"]
+  },
+  {
+    "name": "too many records",
+    "files": {
+      "many.json": {
+        "owner": { "username": "alice" },
+        "records": {
+          "A": [
+            "93.184.216.34",
+            "93.184.216.35",
+            "93.184.216.36",
+            "93.184.216.37",
+            "93.184.216.38"
+          ],
+          "AAAA": [
+            "2606:2800:220:1:248:1893:25c8:1946",
+            "2606:2800:220:1:248:1893:25c8:1947",
+            "2606:2800:220:1:248:1893:25c8:1948",
+            "2606:2800:220:1:248:1893:25c8:1949",
+            "2606:2800:220:1:248:1893:25c8:1950"
+          ],
+          "TXT": ["verification=value"]
+        }
+      }
+    },
+    "codes": ["too_many_records"]
+  },
+  {
+    "name": "invalid A record",
+    "files": {
+      "bad-a.json": {
+        "owner": { "username": "alice" },
+        "records": { "A": "93.184.216.34" }
+      }
+    },
+    "codes": ["invalid_a"]
+  },
+  {
+    "name": "private A record",
+    "files": {
+      "private-a.json": {
+        "owner": { "username": "alice" },
+        "records": { "A": ["10.0.0.1"] }
+      }
+    },
+    "codes": ["private_a"]
+  },
+  {
+    "name": "blocked A record",
+    "files": {
+      "blocked-a.json": {
+        "owner": { "username": "alice" },
+        "records": { "A": ["1.1.1.1"] }
+      }
+    },
+    "codes": ["blocked_a"]
+  },
+  {
+    "name": "invalid AAAA record",
+    "files": {
+      "bad-aaaa.json": {
+        "owner": { "username": "alice" },
+        "records": { "AAAA": "not-ip" }
+      }
+    },
+    "codes": ["invalid_aaaa"]
+  },
+  {
+    "name": "private AAAA record",
+    "files": {
+      "private-aaaa.json": {
+        "owner": { "username": "alice" },
+        "records": { "AAAA": ["::1"] }
+      }
+    },
+    "codes": ["private_aaaa"]
+  },
+  {
+    "name": "invalid CNAME",
+    "files": {
+      "bad-cname.json": {
+        "owner": { "username": "alice" },
+        "records": { "CNAME": "https://example.com" }
+      }
+    },
+    "codes": ["invalid_cname"]
+  },
+  {
+    "name": "CNAME self reference",
+    "files": {
+      "self.json": {
+        "owner": { "username": "alice" },
+        "records": { "CNAME": "self.has-a.link" }
+      }
+    },
+    "codes": ["cname_self"]
+  },
+  {
+    "name": "CNAME apex",
+    "files": {
+      "apex.json": {
+        "owner": { "username": "alice" },
+        "records": { "CNAME": "has-a.link" }
+      }
+    },
+    "codes": ["cname_apex"]
+  },
+  {
+    "name": "blocked CNAME target",
+    "files": {
+      "blocked-cname.json": {
+        "owner": { "username": "alice" },
+        "records": { "CNAME": "foo.workers.dev" }
+      }
+    },
+    "codes": ["cname_blocked_target"]
+  },
+  {
+    "name": "CNAME combined with A",
+    "files": {
+      "combined.json": {
+        "owner": { "username": "alice" },
+        "records": {
+          "CNAME": "example.com",
+          "A": ["93.184.216.34"]
+        }
+      }
+    },
+    "codes": ["cname_combined"]
+  },
+  {
+    "name": "invalid TXT",
+    "files": {
+      "bad-txt.json": {
+        "owner": { "username": "alice" },
+        "records": {
+          "A": ["93.184.216.34"],
+          "TXT": "verification=value"
+        }
+      }
+    },
+    "codes": ["invalid_txt"]
+  },
+  {
+    "name": "TXT too long",
+    "files": {
+      "long-txt.json": {
+        "owner": { "username": "alice" },
+        "records": {
+          "A": ["93.184.216.34"],
+          "TXT": [
+            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          ]
+        }
+      }
+    },
+    "codes": ["txt_too_long"]
+  },
+  {
+    "name": "invalid MX",
+    "files": {
+      "bad-mx.json": {
+        "owner": { "username": "alice" },
+        "records": {
+          "MX": [
+            {
+              "priority": 10,
+              "target": "https://mx.example.com"
+            }
+          ]
+        }
+      }
+    },
+    "codes": ["invalid_mx"]
+  },
+  {
+    "name": "MX priority",
+    "files": {
+      "mx-priority.json": {
+        "owner": { "username": "alice" },
+        "records": {
+          "MX": [
+            {
+              "priority": 70000,
+              "target": "mx.example.com"
+            }
+          ]
+        }
+      }
+    },
+    "codes": ["mx_priority"]
+  },
+  {
+    "name": "MX points into the zone",
+    "files": {
+      "mx-self.json": {
+        "owner": { "username": "alice" },
+        "records": {
+          "MX": [
+            {
+              "priority": 10,
+              "target": "mx.has-a.link"
+            }
+          ]
+        }
+      }
+    },
+    "codes": ["mx_self"]
+  },
+  {
+    "name": "proxied without a proxyable record",
+    "files": {
+      "proxied.json": {
+        "owner": { "username": "alice" },
+        "records": {
+          "MX": [
+            {
+              "priority": 10,
+              "target": "mx.example.com"
+            }
+          ]
+        },
+        "proxied": true
+      }
+    },
+    "codes": ["proxied_without_proxyable_record"]
+  },
+  {
+    "name": "invalid proxied",
+    "files": {
+      "bad-proxied.json": {
+        "owner": { "username": "alice" },
+        "records": { "A": ["93.184.216.34"] },
+        "proxied": "yes"
+      }
+    },
+    "codes": ["invalid_proxied"]
+  },
+  {
+    "name": "duplicate A record",
+    "files": {
+      "dupe-a.json": {
+        "owner": { "username": "alice" },
+        "records": { "A": ["93.184.216.34", "93.184.216.34"] }
+      }
+    },
+    "codes": ["duplicate_record_value"]
+  },
+  {
+    "name": "root TXT only",
+    "files": {
+      "txt-only.json": {
+        "owner": { "username": "alice" },
+        "records": { "TXT": ["verification=value"] }
+      }
+    },
+    "codes": ["root_requires_usable_record"]
+  },
+  {
+    "name": "single character limit",
+    "files": {
+      "a.json": {
+        "owner": { "username": "alice" },
+        "records": { "CNAME": "a.example.com" }
+      },
+      "b.json": {
+        "owner": { "username": "alice" },
+        "records": { "CNAME": "b.example.com" }
+      }
+    },
+    "codes": ["too_many_single_character_subdomains"]
+  },
+  {
+    "name": "root label underscore",
+    "files": {
+      "_vercel.json": {
+        "owner": { "username": "alice" },
+        "records": { "TXT": ["verification=value"] }
+      }
+    },
+    "codes": ["root_label_underscore"]
+  },
+  {
+    "name": "invalid filename characters",
+    "files": {
+      "foo_bar.json": {
+        "owner": { "username": "alice" },
+        "records": { "CNAME": "example.com" }
+      }
+    },
+    "codes": ["invalid_filename"]
+  }
+]

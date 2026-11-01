@@ -1,0 +1,15 @@
+{
+  "owner": {
+    "username": "dave",
+    "email": "dave@example.com"
+  },
+  "records": {
+    "MX": [
+      {
+        "priority": 10,
+        "target": "mx1.example.com"
+      }
+    ],
+    "TXT": ["v=spf1 include:spf.example.com ~all"]
+  }
+}

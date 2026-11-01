@@ -133,6 +133,7 @@ Every file is validated for:
 - Record types and values.
 - Record combinations.
 - Limits.
+- Root subdomains need at least one A, AAAA, CNAME, or MX record.
 - Owner authorization on pull requests.
 - Formatting.
 
