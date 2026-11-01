@@ -126,7 +126,7 @@ Run the `deploy` workflow and leave `apply` disabled for a dry-run. Enable `appl
 
 Recommended repository settings:
 
-- Require the `PR Checks / Gate` status check.
+- Require the `Gate` status check from the `PR Checks` workflow.
 - Require review from CODEOWNERS.
 - Require conversation resolution.
 - Restrict force pushes.
