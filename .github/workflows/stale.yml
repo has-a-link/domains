@@ -32,18 +32,12 @@ jobs:
             echo 'issue<<EOF'
             cat messages/stale/issue.md
             echo EOF
-          } >> "$GITHUB_OUTPUT"
-          {
             echo 'pull_request<<EOF'
             cat messages/stale/pull-request.md
             echo EOF
-          } >> "$GITHUB_OUTPUT"
-          {
             echo 'close_issue<<EOF'
             cat messages/stale/close-issue.md
             echo EOF
-          } >> "$GITHUB_OUTPUT"
-          {
             echo 'close_pull_request<<EOF'
             cat messages/stale/close-pull-request.md
             echo EOF
