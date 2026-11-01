@@ -64,6 +64,11 @@
     "color": "a2eeef",
     "description": "Suggestion or feedback"
   },
+  "stale": {
+    "name": "stale",
+    "color": "d4c5f9",
+    "description": "Stale issue or pull request"
+  },
   "support": {
     "name": "support",
     "color": "c5def5",

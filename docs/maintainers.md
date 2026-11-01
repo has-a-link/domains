@@ -60,6 +60,13 @@ The bot must not execute code from the pull request head. Only the read-only inf
 - Infrastructure changes in a pull request run the full test suite in a read-only job.
 - Deployment validates the registry and runs tests before touching Cloudflare.
 
+## Maintenance workflows
+
+- `Prettier` runs weekly and on demand. It formats the repository, runs the tests, and opens a formatting pull request when changes are needed. Configure `BOT_TOKEN` if you want the formatting pull request to trigger the normal PR checks automatically.
+- `Update Branches` runs daily and on demand. It updates open pull request branches and marks real merge conflicts with a label and a message from `messages/pr/merge-conflict.md`.
+- `Stale` runs daily and on demand. It uses `messages/stale/` for stale and close messages.
+- `Audit` runs weekly and on demand. It runs the full test suite and registry validation. When `CLOUDFLARE_ZONE_ID` is configured, it also checks for DNS drift with `--fail-on-drift`.
+
 ## Deployment
 
 Required repository settings:

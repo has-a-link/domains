@@ -11,7 +11,7 @@ All bot-facing text lives in this directory.
 - `pr/footer.md` is appended to failed validation comments.
 - `pr/errors/` contains the message text for each category of error.
 - `pr/merge-conflict.md` is used by the branch updater.
-- `stale/` contains stale issue and pull request messages.
+- `stale/` contains stale and close messages for issues and pull requests.
 - `maintenance/` contains maintenance workflow messages.
 
 ## Placeholders

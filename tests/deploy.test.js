@@ -98,6 +98,42 @@ test("deploy dry-run builds a plan without a client", async (t) => {
   t.is(result.backupPath, null);
 });
 
+test("deploy fail-on-drift rejects a non-empty plan", async (t) => {
+  const error = await t.throwsAsync(() =>
+    runDeploy(
+      {
+        domains: validFixtures,
+        apply: false,
+        allowEmptyZone: true,
+        failOnDrift: true
+      },
+      {
+        config,
+        current: []
+      }
+    )
+  );
+
+  t.true(error instanceof CloudflarePlanError);
+  t.is(error.code, "drift");
+});
+
+test("deploy fail-on-drift accepts an empty plan", async (t) => {
+  const result = await runDeploy(
+    {
+      apply: false,
+      failOnDrift: true
+    },
+    {
+      config,
+      current: [],
+      desired: []
+    }
+  );
+
+  t.is(result.plan.creates.length, 0);
+});
+
 test("deploy applies creates and verifies the result", async (t) => {
   const client = createClient();
   const directory = fs.mkdtempSync(path.join(os.tmpdir(), "has-a-link-deploy-"));
@@ -246,6 +282,7 @@ test("deploy parse arguments", (t) => {
       "--backup",
       "backup.json",
       "--no-verify",
+      "--fail-on-drift",
       "--json"
     ]),
     {
@@ -256,6 +293,7 @@ test("deploy parse arguments", (t) => {
       fromFile: "current.json",
       backup: "backup.json",
       verify: false,
+      failOnDrift: true,
       json: true,
       help: false
     }
@@ -268,6 +306,7 @@ test("deploy parse arguments", (t) => {
     fromFile: null,
     backup: null,
     verify: true,
+    failOnDrift: false,
     json: false,
     help: false
   });

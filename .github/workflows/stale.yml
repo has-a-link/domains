@@ -1,0 +1,72 @@
+name: Stale
+
+on:
+  schedule:
+    - cron: "0 12 * * *"
+
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+  pull-requests: write
+
+concurrency:
+  group: stale
+  cancel-in-progress: false
+
+jobs:
+  stale:
+    name: Stale
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        with:
+          persist-credentials: false
+
+      - name: Load messages
+        id: messages
+        run: |
+          {
+            echo 'issue<<EOF'
+            cat messages/stale/issue.md
+            echo EOF
+          } >> "$GITHUB_OUTPUT"
+          {
+            echo 'pull_request<<EOF'
+            cat messages/stale/pull-request.md
+            echo EOF
+          } >> "$GITHUB_OUTPUT"
+          {
+            echo 'close_issue<<EOF'
+            cat messages/stale/close-issue.md
+            echo EOF
+          } >> "$GITHUB_OUTPUT"
+          {
+            echo 'close_pull_request<<EOF'
+            cat messages/stale/close-pull-request.md
+            echo EOF
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Ensure stale label
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh label create stale --color d4c5f9 --description "Stale issue or pull request" --force
+
+      - name: Mark stale
+        uses: actions/stale@b5d41d4e1d5dceea10e7104786b73624c18a190f # v10.2.0
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          days-before-stale: 3
+          days-before-close: 2
+          stale-issue-label: stale
+          stale-pr-label: stale
+          stale-issue-message: ${{ steps.messages.outputs.issue }}
+          stale-pr-message: ${{ steps.messages.outputs.pull_request }}
+          close-issue-message: ${{ steps.messages.outputs.close_issue }}
+          close-pr-message: ${{ steps.messages.outputs.close_pull_request }}
+          exempt-issue-labels: "no-stale,maintainer"
+          exempt-pr-labels: "no-stale,maintainer"
+          remove-stale-when-updated: true
+          operations-per-run: 100

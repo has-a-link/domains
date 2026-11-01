@@ -29,6 +29,7 @@ function usage() {
     "  --from-file <path>   Use current DNS records from a JSON file",
     "  --backup <path>      Backup path for --apply",
     "  --no-verify          Skip post-apply verification",
+    "  --fail-on-drift      Fail a dry-run when the plan has changes",
     "  --json               Print machine-readable JSON",
     "  --help               Show this help"
   ].join("\n");
@@ -49,6 +50,7 @@ export function parseArgs(argv) {
     fromFile: null,
     backup: null,
     verify: true,
+    failOnDrift: false,
     json: false,
     help: false
   };
@@ -66,6 +68,8 @@ export function parseArgs(argv) {
       options.allowMassDelete = true;
     } else if (argument === "--no-verify") {
       options.verify = false;
+    } else if (argument === "--fail-on-drift") {
+      options.failOnDrift = true;
     } else if (argument === "--json") {
       options.json = true;
     } else if (argument === "--help" || argument === "-h") {
@@ -150,6 +154,15 @@ export async function runDeploy(
   });
 
   if (!options.apply) {
+    const changes = plan.creates.length + plan.updates.length + plan.deletes.length;
+
+    if (options.failOnDrift && (changes > 0 || plan.conflicts.length > 0)) {
+      throw new CloudflarePlanError("DNS drift detected between the registry and Cloudflare.", {
+        code: "drift",
+        details: plan
+      });
+    }
+
     return {
       config,
       desired: desiredRecords,

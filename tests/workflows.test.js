@@ -125,6 +125,60 @@ test("simulate and sync-label workflows are manual", (t) => {
   t.is(syncLabels.permissions.issues, "write");
 });
 
+test("CI runs for infrastructure changes and never for domains", (t) => {
+  const workflow = parseWorkflow("ci.yml");
+
+  t.deepEqual(workflow.on.push.branches, ["main"]);
+  t.true(workflow.on.push.paths.includes("tests/**"));
+  t.true(workflow.on.push.paths.includes("utils/**"));
+  t.true(workflow.on.push.paths.includes("config/**"));
+  t.true(workflow.on.push.paths.includes("messages/**"));
+  t.true(workflow.on.push.paths.includes("schema/**"));
+  t.false(workflow.on.push.paths.includes("domains/**"));
+  t.true(Object.hasOwn(workflow.on, "workflow_dispatch"));
+  t.deepEqual(workflow.permissions, { contents: "read" });
+});
+
+test("prettier workflow is scheduled and can create a pull request", (t) => {
+  const workflow = parseWorkflow("prettier.yml");
+
+  t.true(Array.isArray(workflow.on.schedule));
+  t.is(workflow.permissions.contents, "write");
+  t.is(workflow.permissions["pull-requests"], "write");
+  t.true(JSON.stringify(workflow.jobs).includes("messages/maintenance/prettier-pr.md"));
+});
+
+test("stale workflow uses message files and the stale label", (t) => {
+  const workflow = parseWorkflow("stale.yml");
+  const job = workflow.jobs.stale;
+  const serialized = JSON.stringify(job);
+
+  t.true(Array.isArray(workflow.on.schedule));
+  t.is(workflow.permissions.issues, "write");
+  t.true(serialized.includes("messages/stale/issue.md"));
+  t.true(serialized.includes("messages/stale/close-issue.md"));
+  t.true(serialized.includes("stale-issue-label"));
+  t.true(job.steps.some((step) => step.uses?.startsWith("actions/stale@")));
+});
+
+test("branch updater is scheduled and can write labels", (t) => {
+  const workflow = parseWorkflow("update-branches.yml");
+
+  t.true(Array.isArray(workflow.on.schedule));
+  t.is(workflow.permissions.contents, "write");
+  t.is(workflow.permissions.issues, "write");
+  t.true(workflow.jobs.update.steps.some((step) => step.run?.includes("update-branches.js")));
+});
+
+test("audit workflow is scheduled and checks drift in production", (t) => {
+  const workflow = parseWorkflow("audit.yml");
+
+  t.true(Array.isArray(workflow.on.schedule));
+  t.deepEqual(Object.keys(workflow.jobs), ["audit", "drift"]);
+  t.is(workflow.jobs.drift.environment, "production");
+  t.true(workflow.jobs.drift.steps.some((step) => step.run?.includes("--fail-on-drift")));
+});
+
 test("deploy workflow is production-scoped and applies only intentionally", (t) => {
   const workflow = parseWorkflow("deploy.yml");
 

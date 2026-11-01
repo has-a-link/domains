@@ -108,6 +108,20 @@ export function createGitHubClient({
     return paginate(`/repos/${owner}/${repo}/pulls/${pullNumber}/files`);
   }
 
+  function listOpenPullRequests() {
+    return paginate(`/repos/${owner}/${repo}/pulls?state=open`);
+  }
+
+  function getPullRequest(pullNumber) {
+    return request("GET", `/repos/${owner}/${repo}/pulls/${pullNumber}`);
+  }
+
+  function updatePullRequestBranch(pullNumber) {
+    return request("PUT", `/repos/${owner}/${repo}/pulls/${pullNumber}/update-branch`, {
+      body: {}
+    });
+  }
+
   function listIssueComments(issueNumber) {
     return paginate(`/repos/${owner}/${repo}/issues/${issueNumber}/comments`);
   }
@@ -207,6 +221,9 @@ export function createGitHubClient({
     repo,
     repository: `${owner}/${repo}`,
     listPullRequestFiles,
+    listOpenPullRequests,
+    getPullRequest,
+    updatePullRequestBranch,
     listIssueComments,
     createIssueComment,
     updateIssueComment,

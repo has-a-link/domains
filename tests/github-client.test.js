@@ -113,6 +113,31 @@ test("comments, labels, and merge helpers use the expected endpoints", async (t)
   t.is(mock.calls[9].url.includes("/labels/bug"), true);
 });
 
+test("pull request branch helpers use the expected endpoints", async (t) => {
+  const responses = [
+    jsonResponse([{ number: 1 }]),
+    jsonResponse({ number: 1, mergeable: false }),
+    jsonResponse({ message: "Branch updated" })
+  ];
+  const mock = createMockFetch(() => responses.shift());
+  const client = createGitHubClient({
+    token: "token",
+    repository: "has-a-link/domains",
+    fetchImpl: mock.fetch
+  });
+
+  t.deepEqual(await client.listOpenPullRequests(), [{ number: 1 }]);
+  t.deepEqual(await client.getPullRequest(1), { number: 1, mergeable: false });
+  t.deepEqual(await client.updatePullRequestBranch(1), { message: "Branch updated" });
+
+  t.true(mock.calls[0].url.includes("/pulls?state=open"));
+  t.true(mock.calls[0].url.includes("per_page=100"));
+  t.is(mock.calls[1].url.endsWith("/pulls/1"), true);
+  t.is(mock.calls[2].options.method, "PUT");
+  t.is(mock.calls[2].url.endsWith("/pulls/1/update-branch"), true);
+  t.deepEqual(JSON.parse(mock.calls[2].options.body), {});
+});
+
 test("upsert updates an existing bot comment", async (t) => {
   const responses = [
     jsonResponse([
