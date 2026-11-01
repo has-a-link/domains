@@ -24,8 +24,8 @@ Cloudflare proxying is available for `A`, `AAAA`, and `CNAME` records by setting
 
 1. Fork this repository.
 2. Create a JSON file in `domains/` named after the subdomain you want.
-   - `domains/example.json` creates `example.has-a.link`.
-   - `domains/blog.example.json` creates `blog.example.has-a.link` and requires `example.json` to exist.
+   - `domains/my-site.json` creates `my-site.has-a.link`.
+   - `domains/blog.my-site.json` creates `blog.my-site.has-a.link` and requires `my-site.json` to exist.
 3. Add your owner information and DNS records.
 4. Commit the file and open a pull request.
 5. Fill out every required section of the pull request template.

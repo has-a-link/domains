@@ -86,7 +86,7 @@ Rules:
 
 Verification records that belong to a different name should use a separate nested file.
 
-For example, a Vercel verification record for `example.has-a.link` belongs in `_vercel.example.json`.
+For example, a Vercel verification record for `my-site.has-a.link` belongs in `_vercel.my-site.json`.
 
 ## MX records
 

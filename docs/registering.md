@@ -5,7 +5,7 @@
 - The website must already exist and be reachable.
 - The website must be related to software development.
 - The website must not be commercial.
-- If you want a nested subdomain such as `blog.example.has-a.link`, `example.has-a.link` must already be registered and owned by the same GitHub account.
+- If you want a nested subdomain such as `blog.my-site.has-a.link`, `my-site.has-a.link` must already be registered and owned by the same GitHub account.
 
 ## 1. Create the domain file
 
@@ -13,8 +13,8 @@ Fork the repository and create a file in `domains/`.
 
 The file name is the subdomain:
 
-- `domains/example.json` creates `example.has-a.link`.
-- `domains/blog.example.json` creates `blog.example.has-a.link`.
+- `domains/my-site.json` creates `my-site.has-a.link`.
+- `domains/blog.my-site.json` creates `blog.my-site.has-a.link`.
 
 The file name must be lowercase and must not contain consecutive hyphens or dots.
 

@@ -6,9 +6,9 @@ All domain files live in `domains/`.
 
 ```text
 domains/
-├── example.json
-├── blog.example.json
-└── _vercel.example.json
+├── my-site.json
+├── blog.my-site.json
+└── _vercel.my-site.json
 ```
 
 ## File names
@@ -17,9 +17,9 @@ The file name, without `.json`, is the subdomain.
 
 | File                   | DNS name                     |
 | ---------------------- | ---------------------------- |
-| `example.json`         | `example.has-a.link`         |
-| `blog.example.json`    | `blog.example.has-a.link`    |
-| `_vercel.example.json` | `_vercel.example.has-a.link` |
+| `my-site.json`         | `my-site.has-a.link`         |
+| `blog.my-site.json`    | `blog.my-site.has-a.link`    |
+| `_vercel.my-site.json` | `_vercel.my-site.has-a.link` |
 
 Rules:
 
@@ -42,8 +42,8 @@ Rules:
 A nested subdomain requires its parent to exist.
 
 ```text
-domains/example.json        required
-domains/blog.example.json   allowed
+domains/my-site.json        required
+domains/blog.my-site.json   allowed
 ```
 
 The child must have the same owner username as the parent.

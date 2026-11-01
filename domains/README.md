@@ -2,8 +2,8 @@
 
 Each JSON file in this directory registers one subdomain.
 
-- `example.json` registers `example.has-a.link`.
-- `blog.example.json` registers `blog.example.has-a.link`.
+- `my-site.json` registers `my-site.has-a.link`.
+- `blog.my-site.json` registers `blog.my-site.has-a.link`.
 
 Nested subdomains require the parent file to exist and to have the same owner.
 
